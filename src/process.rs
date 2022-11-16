@@ -1,6 +1,7 @@
-use rand::distributions::{Distribution, Uniform};
 use std::cmp::Ordering;
 use std::fmt;
+
+use rand::distributions::{Distribution, Uniform};
 
 // Defining the Process structure
 #[derive(Clone)]

@@ -1,15 +1,16 @@
-mod consumer_thread;
-mod process;
-mod producer_thread;
-
-use crate::consumer_thread::Consumer;
-use crate::producer_thread::Producer;
 use std::collections::BinaryHeap;
 use std::io::stdin;
-use std::sync::{mpsc, Arc, Mutex};
+use std::sync::{Arc, Mutex};
 use std::thread;
 use std::thread::sleep;
 use std::time::Duration;
+
+use crate::consumer_thread::Consumer;
+use crate::producer_thread::Producer;
+
+mod consumer_thread;
+mod process;
+mod producer_thread;
 
 pub fn main() {
     // Getting the number of phases that will be generated

@@ -1,5 +1,4 @@
 use std::collections::BinaryHeap;
-use std::intrinsics::raw_eq;
 use std::sync::{Arc, Mutex};
 use std::thread::sleep;
 use std::time::Duration;
