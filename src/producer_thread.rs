@@ -1,63 +1,58 @@
-use std::borrow::Borrow;
 use std::collections::BinaryHeap;
-use std::ptr::null;
-use std::sync::{Arc, Mutex};
+use std::sync::mpsc::Sender;
+use std::sync::{Arc, LockResult, Mutex, MutexGuard};
 use std::thread;
-use std::thread::{JoinHandle, sleep};
+use std::thread::sleep;
 use std::time::Duration;
 
 use crate::process::Process;
 
-pub(crate) struct Producer {
-    thread: Option<JoinHandle<Process>>,
-    sleep: i32,
-    total_to_create: i32,
-    phase: i32,
-    total_been_created: i32,
-    heap: Arc<Mutex<BinaryHeap<Process>>>,
-}
+// Struct for the Producer. It has no members as all relevant info is passed
+// directly into its run function
+pub(crate) struct Producer {}
 
 impl Producer {
-    pub fn new(sleep_time: i32, total: i32, per_phase: i32, bh: Arc<Mutex<BinaryHeap<Process>>>) -> Self {
-        Self {
-            thread: None,
-            sleep: sleep_time.clone(),
-            total_to_create: total.clone(),
-            phase: per_phase.clone(),
-            total_been_created: 0,
-            heap: Arc::clone(&bh),
-        }
-    }
-
-    pub fn run(mut self) {
-        self.thread = Some(thread::spawn(move || {
-            let mut i = 0;
+    pub fn run(
+        self,
+        slep: u32,
+        generations: u32,
+        phase: u32,
+        heap: Arc<Mutex<BinaryHeap<Process>>>,
+    ) {
+        println!("Producer: starting...");
+        // Variable used for setting the new processes id
+        let mut id = 0;
+        // Used to keep track of how many generations have been done
+        let mut total_generations_created: u32 = 0;
+        loop {
+            let mut j: u32 = 0;
             loop {
-                let mut j = 0;
-                loop {
-                    let process: Process = Process::build(i + j);
-                    println!("{}", process);
+                let locked = heap.lock();
+                if locked.is_ok() {
+                    let process: Process = Process::build(id as i32);
+                    println!("Producer: {}", process);
                     j += 1;
-                    self.total_been_created += 1;
-                    self.heap.lock().unwrap().push(process);
-                    if j > self.phase {
-                        sleep(Duration::from_millis(self.sleep as u64));
+
+                    let mut locked_heap = locked.unwrap();
+                    locked_heap.push(process);
+                    drop(locked_heap);
+                    if j == phase {
+                        sleep(Duration::from_millis(slep as u64));
                         break;
                     }
+                    id += 1;
+                } else {
+                    println!("Producer: BLOCKED");
+                    continue;
                 }
-                sleep(Duration::from_millis(100 as u64));
-                i += 1;
             }
-        }
-        )
-        );
-    }
-
-    pub fn stop(&mut self) -> Option<thread::Result<Process>> {
-        if let Some(handle) = self.thread.take() {
-            Some(handle.join())
-        } else {
-            None
+            total_generations_created += 1;
+            sleep(Duration::from_millis(100 as u64));
+            id += 1;
+            if total_generations_created == generations {
+                println!("Producer: All done");
+                return;
+            }
         }
     }
 }

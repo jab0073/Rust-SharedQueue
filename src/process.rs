@@ -1,6 +1,6 @@
-use std::fmt;
 use rand::distributions::{Distribution, Uniform};
 use std::cmp::Ordering;
+use std::fmt;
 
 // Defining the Process structure
 #[derive(Clone)]
@@ -12,6 +12,11 @@ pub(crate) struct Process {
 }
 
 impl Process {
+    pub fn get_sleep(&self) -> i16 {
+        self.sleep
+    }
+
+    // Process builder function
     pub fn build(id: i32) -> Process {
         let mut rng = rand::thread_rng();
         let priority = Uniform::from(0..101); // Random range for priority
@@ -24,20 +29,6 @@ impl Process {
         };
         return proc;
     }
-}
-
-// Given an Process ID this function builds and returns a new Process
-pub(crate) fn process_builder(id: i32) -> Process {
-    let mut rng = rand::thread_rng();
-    let priority = Uniform::from(0..101); // Random range for priority
-    let sleep = Uniform::from(100..2001); // Random range for sleep
-    let proc: Process = Process {
-        process_id: id,
-        priority: priority.sample(&mut rng), // Getting a value from the range
-        sleep: sleep.sample(&mut rng),       // Getting a value from the range
-        description: format!("Process with ID of {}", id),
-    };
-    return proc;
 }
 
 // Equal function for a Process
