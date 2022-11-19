@@ -1,3 +1,25 @@
+/*
+Tested and developed using:
+
+IDE:
+
+IntelliJ IDEA 2022.2.3 (Ultimate Edition)
+Build #IU-222.4345.14, built on October 5, 2022
+Runtime version: 17.0.4.1+7-b469.62 aarch64
+macOS 13.0
+Non-Bundled Plugins:
+    org.rust.lang (0.4.180.4932-222)
+
+System:
+
+Model Name:	                MacBook Pro
+Model Identifier:	        MacBookPro17,1
+Model Number:	            MYD92LL/A
+Chip:	                    Apple M1
+Total Number of Cores:	    8 (4 performance and 4 efficiency)
+Memory:	                    8 GB
+*/
+
 use std::collections::BinaryHeap;
 use std::io::stdin;
 use std::sync::{Arc, Mutex};

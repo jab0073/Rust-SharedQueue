@@ -1,7 +1,27 @@
+/*
+Tested and developed using:
+
+IDE:
+
+IntelliJ IDEA 2022.2.3 (Ultimate Edition)
+Build #IU-222.4345.14, built on October 5, 2022
+Runtime version: 17.0.4.1+7-b469.62 aarch64
+macOS 13.0
+Non-Bundled Plugins:
+    org.rust.lang (0.4.180.4932-222)
+
+System:
+
+Model Name:	                MacBook Pro
+Model Identifier:	        MacBookPro17,1
+Model Number:	            MYD92LL/A
+Chip:	                    Apple M1
+Total Number of Cores:	    8 (4 performance and 4 efficiency)
+Memory:	                    8 GB
+*/
+
 use std::collections::BinaryHeap;
-use std::sync::{Arc, LockResult, Mutex, MutexGuard};
-use std::sync::mpsc::Sender;
-use std::thread;
+use std::sync::{Arc, Mutex};
 use std::thread::sleep;
 use std::time::Duration;
 
@@ -14,7 +34,7 @@ pub(crate) struct Producer {}
 impl Producer {
     pub fn run(
         self,
-        slep: u32,
+        sleep_time: u32,
         generations: u32,
         phase: u32,
         heap: Arc<Mutex<BinaryHeap<Process>>>,
@@ -50,7 +70,7 @@ impl Producer {
                     // If the number of process to generate for this cycle is met then sleep and
                     // this break from the inner loop
                     if j == phase {
-                        sleep(Duration::from_millis(slep as u64));
+                        sleep(Duration::from_millis(sleep_time as u64));
                         break;
                     }
                     // Increment the id
